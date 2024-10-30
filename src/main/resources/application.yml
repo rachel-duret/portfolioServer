@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: portfolioServer
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/portfolio?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    name: portfolio
+    generate-unique-name: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    default-schema: portfolio
+server:
+  port: 8080
