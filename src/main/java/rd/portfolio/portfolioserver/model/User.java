@@ -8,12 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 import rd.portfolio.portfolioserver.dto.UserDTO;
 
 import java.time.LocalDate;
-import java.util.List;
-
 
 @Getter
 @Setter
@@ -45,9 +42,10 @@ public class User {
     @Column(name = "sex", nullable = false)
     private String sex;
     @Column(name = "created_at")
-    private long createdAt=System.currentTimeMillis();
-    @Column(name="updated_at")
+    private long createdAt = System.currentTimeMillis();
+    @Column(name = "updated_at")
     private long updatedAt;
+
     public UserDTO conventToDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
