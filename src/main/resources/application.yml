@@ -1,6 +1,7 @@
 spring:
   application:
     name: portfolioServer
+
   jpa:
     database: mysql
     hibernate:
@@ -19,5 +20,9 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
     default-schema: portfolio
+  session:
+    jdbc:
+      initialize-schema: always
+    timeout: 900
 server:
   port: 8080

@@ -11,7 +11,7 @@ public class UserDTO {
     private String password;
     private String email;
     private String phone;
-    private String role;
+    private RoleType role;
     private String imageUrl;
     private String aboutMe;
     private String profession;
@@ -20,16 +20,17 @@ public class UserDTO {
 
     public User convertToUser(UserDTO userDTO) {
 
-        return new User(){{
+        return new User() {{
             setUsername(userDTO.getUsername());
             setPassword(userDTO.getPassword());
             setEmail(userDTO.getEmail());
-            setPhone(userDTO.getPhone());
+            //            setPhone(userDTO.getPhone());
             setRole(userDTO.getRole());
-            setImageUrl(userDTO.getImageUrl());
-            setAboutMe(userDTO.getAboutMe());
+            //            setImageUrl(userDTO.getImageUrl());
+            //            setAboutMe(userDTO.getAboutMe());
             setProfession(userDTO.getProfession());
-            setBirthday(userDTO.birthday);
+            setSex(userDTO.getSex());
+            //            setBirthday(userDTO.birthday);
         }};
     }
 

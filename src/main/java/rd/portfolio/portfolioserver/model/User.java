@@ -8,8 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import rd.portfolio.portfolioserver.dto.RoleType;
 import rd.portfolio.portfolioserver.dto.UserDTO;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
@@ -32,7 +35,7 @@ public class User {
     @Column(name = "phone")
     private String phone;
     @Column(name = "role", nullable = false)
-    private String role;
+    private RoleType role;
     @Column(name = "imageUrl")
     private String imageUrl;
     @Column(name = "about_me")
@@ -42,20 +45,20 @@ public class User {
     @Column(name = "sex", nullable = false)
     private String sex;
     @Column(name = "created_at")
-    private long createdAt = System.currentTimeMillis();
+    private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
-    private long updatedAt;
+    private Timestamp updatedAt;
 
-    public UserDTO conventToDTO(User user) {
+    public UserDTO conventToDTO() {
         UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(user.getUsername());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPhone(user.getPhone());
-        userDTO.setRole(user.getRole());
-        userDTO.setImageUrl(user.getImageUrl());
-        userDTO.setAboutMe(user.getAboutMe());
-        userDTO.setProfession(user.getProfession());
+        userDTO.setUsername(this.getUsername());
+        userDTO.setPassword(this.getPassword());
+        userDTO.setEmail(this.getEmail());
+        userDTO.setPhone(this.getPhone());
+        userDTO.setRole(this.getRole());
+        userDTO.setImageUrl(this.getImageUrl());
+        userDTO.setAboutMe(this.getAboutMe());
+        userDTO.setProfession(this.getProfession());
         return userDTO;
     }
 }
