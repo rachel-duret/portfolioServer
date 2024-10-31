@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +17,7 @@ import rd.portfolio.portfolioserver.dto.UserDTO;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -48,6 +52,10 @@ public class User {
     private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @ManyToMany
+    @JoinTable(name = "skill", joinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills;
 
     public UserDTO conventToDTO() {
         UserDTO userDTO = new UserDTO();
