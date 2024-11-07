@@ -5,9 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +14,6 @@ import rd.portfolio.portfolioserver.dto.UserDTO;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
@@ -39,7 +35,7 @@ public class User {
     @Column(name = "phone")
     private String phone;
     @Column(name = "role", nullable = false)
-    private RoleType role;
+    private String role;
     @Column(name = "imageUrl")
     private String imageUrl;
     @Column(name = "about_me")
@@ -53,9 +49,13 @@ public class User {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @ManyToMany
-    @JoinTable(name = "skill", joinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills;
+    //    @OneToMany(fetch = FetchType.LAZY)
+    //    @JoinColumn(name = "skill_id", nullable = false)
+    //    private List<Skill> skills;
+    //
+    //    @OneToMany(fetch = FetchType.LAZY)
+    //    @JoinColumn(name = "social_id", nullable = false)
+    //    private List<Social> socials;
 
     public UserDTO conventToDTO() {
         UserDTO userDTO = new UserDTO();
@@ -63,7 +63,7 @@ public class User {
         userDTO.setPassword(this.getPassword());
         userDTO.setEmail(this.getEmail());
         userDTO.setPhone(this.getPhone());
-        userDTO.setRole(this.getRole());
+        userDTO.setRole(RoleType.valueOf(this.getRole()));
         userDTO.setImageUrl(this.getImageUrl());
         userDTO.setAboutMe(this.getAboutMe());
         userDTO.setProfession(this.getProfession());

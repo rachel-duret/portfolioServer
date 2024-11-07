@@ -19,7 +19,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
+
         return this.userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public User getUserByName(String name) {
+        return this.userRepository.findByUsername(name);
     }
 
     @Override
@@ -84,9 +90,9 @@ public class UserServiceImpl implements UserService {
         user.setSex(userParams.getSex());
         user.setProfession(userParams.getProfession());
         if (Objects.equals(userParams.getUsername(), "rachel")) {
-            user.setRole(RoleType.ADMIN);
+            user.setRole(RoleType.ADMIN.name());
         } else {
-            user.setRole(RoleType.USER);
+            user.setRole(RoleType.USER.name());
         }
     }
 

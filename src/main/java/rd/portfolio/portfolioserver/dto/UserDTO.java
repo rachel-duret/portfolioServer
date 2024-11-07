@@ -25,7 +25,7 @@ public class UserDTO {
             setPassword(userDTO.getPassword());
             setEmail(userDTO.getEmail());
             //            setPhone(userDTO.getPhone());
-            setRole(userDTO.getRole());
+            setRole(userDTO.getRole().name());
             //            setImageUrl(userDTO.getImageUrl());
             //            setAboutMe(userDTO.getAboutMe());
             setProfession(userDTO.getProfession());

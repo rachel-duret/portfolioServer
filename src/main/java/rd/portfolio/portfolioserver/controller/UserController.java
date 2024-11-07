@@ -26,7 +26,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         try {
             User user = this.userService.getUserById(id);
             return new ResponseEntity<>(user.conventToDTO(), HttpStatus.OK);
@@ -36,10 +36,22 @@ public class UserController {
 
     }
 
+    //    @GetMapping("/{name}")
+    //    public ResponseEntity<UserDTO> getUserByName(@PathVariable String name) {
+    //        try {
+    //            User user = this.userService.getUserByName(name);
+    //            return new ResponseEntity<>(user.conventToDTO(), HttpStatus.OK);
+    //        } catch (UserNotFoundException ex) {
+    //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //        }
+    //
+    //    }
+
     @PostMapping()
     public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserParams userParam) {
         boolean exist = this.userService.isUserExist(userParam.getUsername());
         if (exist) {
+            // TODO maybe put this check to service leve?
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         UserDTO userDTO = this.userService.createUser(userParam).conventToDTO();

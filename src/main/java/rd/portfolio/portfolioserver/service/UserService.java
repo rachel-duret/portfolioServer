@@ -7,6 +7,8 @@ public interface UserService {
 
     User getUserById(Long id);
 
+    User getUserByName(String name);
+
     User createUser(UserParams userParam);
 
     User updateUser(Long id, UserParams userParams);
