@@ -94,7 +94,7 @@ public class SkillServiceImpl implements SkillService {
         skill.setImage(skillParams.getImage());
         skill.setUrl(skillParams.getUrl());
         // TODO to change the user from auth
-        User user = userRepository.findById(1L).get();
+        User user = userRepository.findById(3L).get();
         skill.setUser(user);
     }
 

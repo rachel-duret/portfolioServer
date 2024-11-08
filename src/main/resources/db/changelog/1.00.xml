@@ -58,6 +58,9 @@
             <column name="url" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="image_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_user_social" references="user(id)"/>
             </column>

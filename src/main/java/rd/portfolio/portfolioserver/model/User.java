@@ -49,16 +49,9 @@ public class User {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    //    @OneToMany(fetch = FetchType.LAZY)
-    //    @JoinColumn(name = "skill_id", nullable = false)
-    //    private List<Skill> skills;
-    //
-    //    @OneToMany(fetch = FetchType.LAZY)
-    //    @JoinColumn(name = "social_id", nullable = false)
-    //    private List<Social> socials;
-
     public UserDTO conventToDTO() {
         UserDTO userDTO = new UserDTO();
+        userDTO.setId(this.id);
         userDTO.setUsername(this.getUsername());
         userDTO.setPassword(this.getPassword());
         userDTO.setEmail(this.getEmail());

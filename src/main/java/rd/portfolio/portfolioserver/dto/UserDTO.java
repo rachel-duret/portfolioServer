@@ -1,12 +1,17 @@
 package rd.portfolio.portfolioserver.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import rd.portfolio.portfolioserver.model.User;
 
 import java.time.LocalDate;
 
 @Data
+@Setter
+@Getter
 public class UserDTO {
+    private Long id;
     private String username;
     private String password;
     private String email;

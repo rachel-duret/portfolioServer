@@ -36,10 +36,9 @@ public class Skill {
 
     public SkillDTO convertToDTO() {
         SkillDTO skillDTO = new SkillDTO();
-        skillDTO.setName(this.name);
-        skillDTO.setImage(this.image);
-        skillDTO.setUrl(this.url);
+        skillDTO.setId(id);
+        skillDTO.setName(name);
+        skillDTO.setUrl(url);
         return skillDTO;
-
     }
 }

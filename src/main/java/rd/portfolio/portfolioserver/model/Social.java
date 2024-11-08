@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import rd.portfolio.portfolioserver.dto.SocialDTO;
 
 @Getter
 @Setter
@@ -26,9 +27,19 @@ public class Social {
     private String name;
     @Column(name = "url")
     private String url;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public SocialDTO convertToDTO() {
+        SocialDTO socialDTO = new SocialDTO();
+        socialDTO.setId(this.id);
+        socialDTO.setName(this.name);
+        socialDTO.setUrl(this.url);
+        return socialDTO;
+    }
 
 }
