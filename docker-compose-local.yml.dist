@@ -1,0 +1,18 @@
+services:
+  database:
+    image: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    #      - MYSQL_ROOT_PASSWORD=root
+    #      - MYSQL_DATABASE=portfolio
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
