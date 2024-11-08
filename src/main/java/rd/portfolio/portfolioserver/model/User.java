@@ -67,6 +67,8 @@ public class User {
         userDTO.setImageUrl(this.getImageUrl());
         userDTO.setAboutMe(this.getAboutMe());
         userDTO.setProfession(this.getProfession());
+        userDTO.setSex(this.getSex());
+        userDTO.setBirthday(this.getBirthday());
         return userDTO;
     }
 }

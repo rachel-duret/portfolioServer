@@ -1,6 +1,7 @@
 package rd.portfolio.portfolioserver.service;
 
 import rd.portfolio.portfolioserver.model.User;
+import rd.portfolio.portfolioserver.params.UpdateUserParam;
 import rd.portfolio.portfolioserver.params.UserParams;
 
 public interface UserService {
@@ -11,7 +12,7 @@ public interface UserService {
 
     User createUser(UserParams userParam);
 
-    User updateUser(Long id, UserParams userParams);
+    User updateUser(Long id, UpdateUserParam updateUserParam);
 
     void deleteUser(Long id);
 

@@ -6,9 +6,12 @@ import rd.portfolio.portfolioserver.dto.RoleType;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
 import rd.portfolio.portfolioserver.model.User;
+import rd.portfolio.portfolioserver.params.UpdateUserParam;
 import rd.portfolio.portfolioserver.params.UserParams;
 import rd.portfolio.portfolioserver.repository.UserRepository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -39,11 +42,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, UserParams userParams) {
+    public User updateUser(Long id, UpdateUserParam updateUserParam) {
         User user = this.userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        // TODO maybe check userParams to updatedUserParams
-        this.validateUpdateUserParams(userParams);
-        this.applyToUser(user, userParams);
+        this.validateUpdateUserParams(updateUserParam);
+        this.applyToUser(user, updateUserParam);
         return this.userRepository.save(user);
     }
 
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUserExist(Long id) {
-        return false;
+        return this.userRepository.existsById(id);
     }
 
     private void validateParams(User user, UserParams userParams) {
@@ -72,9 +74,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateUpdateUserParams(UserParams userParams) {
+    private void validateUpdateUserParams(UpdateUserParam updateUserParam) {
         HashMap<String, String> errors = new HashMap<>();
-        if (userParams.getUsername() == null || userParams.getUsername().isEmpty()) {
+        if (updateUserParam.getUsername() == null || updateUserParam.getUsername().isEmpty()) {
             errors.put("username", "Username cannot be empty");
         }
         if (!errors.isEmpty()) {
@@ -90,6 +92,24 @@ public class UserServiceImpl implements UserService {
         user.setSex(userParams.getSex());
         user.setProfession(userParams.getProfession());
         if (Objects.equals(userParams.getUsername(), "rachel")) {
+            user.setRole(RoleType.ADMIN.name());
+        } else {
+            user.setRole(RoleType.USER.name());
+        }
+    }
+
+    private void applyToUser(User user, UpdateUserParam updateUserParam) {
+        user.setUsername(updateUserParam.getUsername());
+        user.setEmail(updateUserParam.getEmail());
+        user.setSex(updateUserParam.getSex());
+        user.setAboutMe(updateUserParam.getAboutMe());
+        user.setProfession(updateUserParam.getProfession());
+        user.setBirthday(updateUserParam.getBirthday());
+        user.setProfession(updateUserParam.getProfession());
+        user.setPhone(updateUserParam.getPhoneNumber());
+        user.setImageUrl(updateUserParam.getImageUrl());
+        user.setUpdatedAt(Timestamp.from(Instant.now()));
+        if (Objects.equals(updateUserParam.getUsername(), "rachel")) {
             user.setRole(RoleType.ADMIN.name());
         } else {
             user.setRole(RoleType.USER.name());

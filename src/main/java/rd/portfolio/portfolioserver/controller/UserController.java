@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rd.portfolio.portfolioserver.dto.UserDTO;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
 import rd.portfolio.portfolioserver.model.User;
+import rd.portfolio.portfolioserver.params.UpdateUserParam;
 import rd.portfolio.portfolioserver.params.UserParams;
 import rd.portfolio.portfolioserver.service.UserService;
 
@@ -60,11 +61,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserDTO updateUser(Authentication authentication, @PathVariable Long id, @RequestBody UserParams userParams) {
-        if (!this.userService.isUserExist(authentication.getName())) {
-            throw new UserNotFoundException(authentication.getName());
+    public UserDTO updateUser(@PathVariable Long id, @RequestBody UpdateUserParam updateUserParam) {
+        if (!this.userService.isUserExist(id)) {
+            throw new UserNotFoundException("User not found with id " + id);
         }
-        User user = this.userService.updateUser(id, userParams);
+        User user = this.userService.updateUser(id, updateUserParam);
         return user.conventToDTO();
     }
 
