@@ -1,6 +1,7 @@
 package rd.portfolio.portfolioserver.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.dto.RoleType;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserById(Long id) {
@@ -87,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     private void applyToUser(User user, UserParams userParams) {
         user.setUsername(userParams.getUsername());
-        user.setPassword(userParams.getPassword());
+        user.setPassword(passwordEncoder.encode(userParams.getPassword()));
         user.setEmail(userParams.getEmail());
         user.setSex(userParams.getSex());
         user.setProfession(userParams.getProfession());

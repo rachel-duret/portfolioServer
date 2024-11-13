@@ -69,6 +69,7 @@ public class UserController {
         return user.conventToDTO();
     }
 
+    // TODO only admin role can delete user
     @DeleteMapping("/{id}")
     public void deleteUser(Authentication authentication, @PathVariable Long id) {
         this.userService.deleteUser(id);
