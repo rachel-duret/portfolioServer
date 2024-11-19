@@ -1,9 +1,7 @@
 package rd.portfolio.portfolioserver.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +11,9 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import rd.portfolio.portfolioserver.dto.SkillDTO;
+
+import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -29,8 +30,12 @@ public class Skill {
     private String image;
     @Column(name = "url", nullable = false)
     private String url;
+    @Column(name = "created_at")
+    private Timestamp createdAt = Timestamp.from(Instant.now());
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

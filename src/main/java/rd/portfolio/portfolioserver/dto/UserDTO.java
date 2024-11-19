@@ -30,7 +30,7 @@ public class UserDTO {
             setPassword(userDTO.getPassword());
             setEmail(userDTO.getEmail());
             //            setPhone(userDTO.getPhone());
-            setRole(userDTO.getRole().name());
+            setRole(userDTO.getRole());
             //            setImageUrl(userDTO.getImageUrl());
             //            setAboutMe(userDTO.getAboutMe());
             setProfession(userDTO.getProfession());

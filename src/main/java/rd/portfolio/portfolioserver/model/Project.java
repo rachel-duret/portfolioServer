@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import rd.portfolio.portfolioserver.dto.SocialDTO;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -18,18 +17,20 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "social", schema = "portfolio")
-public class Social {
+@Table(name = "project")
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "name")
     private String name;
+    //    @Column(name = "technologies")
+    //    private List<Skill> technologies;
     @Column(name = "url")
     private String url;
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "description")
+    private String description;
     @Column(name = "created_at")
     private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
@@ -38,13 +39,4 @@ public class Social {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    public SocialDTO convertToDTO() {
-        SocialDTO socialDTO = new SocialDTO();
-        socialDTO.setId(this.id);
-        socialDTO.setName(this.name);
-        socialDTO.setUrl(this.url);
-        return socialDTO;
-    }
-
 }
