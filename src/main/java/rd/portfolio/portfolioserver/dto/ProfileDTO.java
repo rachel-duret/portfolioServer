@@ -20,7 +20,6 @@ public class ProfileDTO {
     public Profile convertToProfile() {
         Profile profile = new Profile();
         profile.setPhone(this.getPhone());
-        profile.setRole(this.getRole().name());
         profile.setImageUrl(this.getImageUrl());
         profile.setAboutMe(this.getAboutMe());
         profile.setProfession(this.getProfession());

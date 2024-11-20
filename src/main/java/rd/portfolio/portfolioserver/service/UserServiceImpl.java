@@ -91,8 +91,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userParams.getUsername());
         user.setPassword(passwordEncoder.encode(userParams.getPassword()));
         user.setEmail(userParams.getEmail());
-        user.setSex(userParams.getSex());
-        user.setProfession(userParams.getProfession());
+
         if (Objects.equals(userParams.getUsername(), "rachel")) {
             user.setRole(RoleType.ADMIN.name());
         } else {
@@ -103,13 +102,6 @@ public class UserServiceImpl implements UserService {
     private void applyToUser(User user, UpdateUserParam updateUserParam) {
         user.setUsername(updateUserParam.getUsername());
         user.setEmail(updateUserParam.getEmail());
-        user.setSex(updateUserParam.getSex());
-        user.setAboutMe(updateUserParam.getAboutMe());
-        user.setProfession(updateUserParam.getProfession());
-        user.setBirthday(updateUserParam.getBirthday());
-        user.setProfession(updateUserParam.getProfession());
-        user.setPhone(updateUserParam.getPhoneNumber());
-        user.setImageUrl(updateUserParam.getImageUrl());
         user.setUpdatedAt(Timestamp.from(Instant.now()));
         if (Objects.equals(updateUserParam.getUsername(), "rachel")) {
             user.setRole(RoleType.ADMIN.name());

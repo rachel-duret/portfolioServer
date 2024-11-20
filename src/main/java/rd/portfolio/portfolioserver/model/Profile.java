@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import rd.portfolio.portfolioserver.dto.ProfileDTO;
-import rd.portfolio.portfolioserver.dto.RoleType;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -29,8 +28,6 @@ public class Profile {
     private LocalDate birthday;
     @Column(name = "phone")
     private String phone;
-    @Column(name = "role", nullable = false)
-    private String role;
     @Column(name = "imageUrl")
     private String imageUrl;
     @Column(name = "about_me")
@@ -51,8 +48,6 @@ public class Profile {
     public ProfileDTO conventToDTO() {
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setId(this.id);
-
-        profileDTO.setRole(RoleType.valueOf(this.getRole()));
         profileDTO.setImageUrl(this.getImageUrl());
         profileDTO.setAboutMe(this.getAboutMe());
         profileDTO.setProfession(this.getProfession());

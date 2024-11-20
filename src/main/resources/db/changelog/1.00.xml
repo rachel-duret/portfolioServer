@@ -19,13 +19,25 @@
             <column name="email" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="role" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+            </column>
+        </createTable>
+
+    </changeSet>
+    <!--    Profile-->
+    <changeSet id="2" author="rachel-d">
+        <createTable tableName="profile" schemaName="portfolio">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
             <column name="birthday" type="DATE">
             </column>
             <column name="phone" type="varchar(20)">
-
-            </column>
-            <column name="role" type="varchar(50)">
-                <constraints nullable="false"/>
             </column>
             <column name="image_url" type="varchar(255)">
 
@@ -43,11 +55,14 @@
             </column>
             <column name="updated_at" type="TIMESTAMP">
             </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_profile" references="user(id)"/>
+            </column>
         </createTable>
 
     </changeSet>
     <!--    Social-->
-    <changeSet id="2" author="rachel-d">
+    <changeSet id="3" author="rachel-d">
         <createTable tableName="social">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -61,14 +76,18 @@
             <column name="image_url" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_user_social" references="user(id)"/>
+            <!--            <column name="user_id" type="BIGINT">-->
+            <!--                <constraints nullable="false" foreignKeyName="fk_user_social" references="user(id)"/>-->
+            <!--            </column>-->
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
             </column>
         </createTable>
     </changeSet>
 
     <!--    Skill-->
-    <changeSet id="3" author="rachel-d">
+    <changeSet id="4" author="rachel-d">
         <createTable tableName="skills">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -82,9 +101,38 @@
             <column name="url" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
             </column>
+            <column name="updated_at" type="TIMESTAMP">
+            </column>
+            <!--            <column name="user_id" type="BIGINT">-->
+            <!--                <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>-->
+            <!--            </column>-->
+        </createTable>
+    </changeSet>
+
+    <!--    Project-->
+    <changeSet id="5" author="rachel-d">
+        <createTable tableName="project">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+            </column>
+            <!--            <column name="user_id" type="BIGINT">-->
+            <!--                <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>-->
+            <!--            </column>-->
         </createTable>
     </changeSet>
 

@@ -36,7 +36,7 @@ public class Skill {
     private Timestamp updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public SkillDTO convertToDTO() {

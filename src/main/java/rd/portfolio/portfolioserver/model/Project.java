@@ -27,6 +27,8 @@ public class Project {
     private String name;
     //    @Column(name = "technologies")
     //    private List<Skill> technologies;
+    @Column(name = "image")
+    private String image;
     @Column(name = "url")
     private String url;
     @Column(name = "description")
@@ -37,6 +39,6 @@ public class Project {
     private Timestamp updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 }

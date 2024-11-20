@@ -32,6 +32,8 @@ public class User {
     private String password;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @Column(name = "role", nullable = false)
+    private String role;
     @Column(name = "created_at")
     private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
@@ -39,12 +41,12 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
-    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Skill> skill;
-    @OneToMany(mappedBy = "social", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Social> social;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> project;
 
     public UserDTO conventToDTO() {
