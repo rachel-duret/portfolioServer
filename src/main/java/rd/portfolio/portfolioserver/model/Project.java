@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import rd.portfolio.portfolioserver.dto.ProjectDTO;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -41,4 +42,12 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public ProjectDTO convertToDTO() {
+        ProjectDTO projectDTO = new ProjectDTO();
+        projectDTO.setId(id);
+        projectDTO.setName(name);
+        projectDTO.setUrl(url);
+        return projectDTO;
+    }
 }

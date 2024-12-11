@@ -52,24 +52,17 @@ public class SkillServiceImpl implements SkillService {
 
     @Override
     public void delete(Long id) {
-        Skill skill = this.findById(id);
+        Skill skill = this.skillRepository.findById(id).orElseThrow(SkillNotFoundException::new);
         this.securityUtil.ensureLoggedUser(skill.getUser().getId());
-        if (!this.existsById(id)) {
-            throw new SkillNotFoundException("Skill with id " + id + " not found");
-        }
+
         skillRepository.deleteById(id);
     }
 
     @Override
     public Skill update(Long id, SkillParams skillParams) {
-        User user = this.securityUtil.ensureLoggedUser(skillParams.getUserId());
-        if (!this.existsById(id)) {
-            throw new SkillNotFoundException("Skill with id " + id + " not found");
-        }
-
+        this.securityUtil.ensureLoggedUser(skillParams.getUserId());
         this.validateSkillParams(skillParams);
-        Skill skill = new Skill();
-        skill.setUser(user);
+        Skill skill = this.skillRepository.findById(id).orElseThrow(SkillNotFoundException::new);
         this.applySkill(skillParams, skill);
         return skillRepository.save(skill);
     }
