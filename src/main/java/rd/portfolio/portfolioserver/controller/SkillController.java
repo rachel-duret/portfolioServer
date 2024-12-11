@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rd.portfolio.portfolioserver.dto.SkillDTO;
 import rd.portfolio.portfolioserver.model.Skill;
-import rd.portfolio.portfolioserver.model.User;
 import rd.portfolio.portfolioserver.params.SkillParams;
 import rd.portfolio.portfolioserver.service.SkillService;
 
@@ -39,9 +38,7 @@ public class SkillController {
     @PostMapping("")
     public ResponseEntity<SkillDTO> createSkill(@RequestBody SkillParams skillParams) {
         Skill skill = skillService.save(skillParams);
-        skill.setUser(new User() {{
-            setId(1L);
-        }});
+
         return ResponseEntity.ok(skill.convertToDTO());
     }
 

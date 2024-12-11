@@ -1,10 +1,15 @@
 package rd.portfolio.portfolioserver.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.SocialAlreadyExistException;
 import rd.portfolio.portfolioserver.exception.SocialNotFoundException;
+import rd.portfolio.portfolioserver.exception.UserNotFoundException;
 import rd.portfolio.portfolioserver.model.Social;
 import rd.portfolio.portfolioserver.model.User;
 import rd.portfolio.portfolioserver.params.SocialParams;
@@ -20,6 +25,7 @@ import java.util.Map;
 public class SocialServiceImpl implements SocialService {
     private final SocialRepository socialRepository;
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public Social createSocial(SocialParams socialParams) {
@@ -30,8 +36,16 @@ public class SocialServiceImpl implements SocialService {
         social.setName(socialParams.getName());
         social.setUrl(socialParams.getUrl());
         social.setImageUrl(socialParams.getImageUrl());
-        // TODO
-        User user = this.userRepository.findById(3L).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(authentication.getName());
+        User user = this.userRepository.findById(socialParams.getUserId()).orElseThrow(UserNotFoundException::new);
+        if (!user.getUsername().equals(userDetails.getUsername())) {
+            throw new UserNotFoundException();
+        }
+
+        if (!user.getUsername().equals(userDetails.getUsername())) {
+            throw new UserNotFoundException();
+        }
         social.setUser(user);
         return this.socialRepository.save(social);
 
@@ -45,7 +59,7 @@ public class SocialServiceImpl implements SocialService {
         social.setUrl(socialParams.getUrl());
         social.setImageUrl(socialParams.getImageUrl());
 
-        return socialRepository.save(social);
+        return this.socialRepository.save(social);
     }
 
     @Override
@@ -55,7 +69,7 @@ public class SocialServiceImpl implements SocialService {
     }
 
     @Override
-    public List<Social> getAllSocial() {
+    public List<Social> getAllSocialByUserId(Long userId) {
         return this.socialRepository.findAll();
     }
 

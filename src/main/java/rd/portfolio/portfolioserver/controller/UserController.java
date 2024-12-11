@@ -37,16 +37,13 @@ public class UserController {
 
     }
 
-    //    @GetMapping("/{name}")
-    //    public ResponseEntity<UserDTO> getUserByName(@PathVariable String name) {
-    //        try {
-    //            User user = this.userService.getUserByName(name);
-    //            return new ResponseEntity<>(user.conventToDTO(), HttpStatus.OK);
-    //        } catch (UserNotFoundException ex) {
-    //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //        }
-    //
-    //    }
+    @GetMapping("/duret/{name}")
+    public ResponseEntity<UserDTO> getUserByName(@PathVariable String name) {
+
+        User user = this.userService.getUserByName(name);
+        return new ResponseEntity<>(user.conventToDTO(), HttpStatus.OK);
+
+    }
 
     @PostMapping()
     public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserParams userParam) {

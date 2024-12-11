@@ -3,6 +3,7 @@ package rd.portfolio.portfolioserver.configuration.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,13 +46,10 @@ public class WebSecurityConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(req -> req.requestMatchers("/auth/*")
                                                      .permitAll()
+                                                     .requestMatchers(HttpMethod.GET, "/user/*", "/skill", "/profile/*", "/project/*", "/social/*", "/contact")
+                                                     .permitAll()
                                                      .anyRequest()
                                                      .authenticated())
-                    //                    .formLogin(form -> form.loginPage("/login")
-                    //                                           .defaultSuccessUrl("/users")
-                    //                                           .loginProcessingUrl("/auth/login")
-                    //                                           .permitAll()
-                    //                              )
                     .sessionManagement(ssession -> ssession.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     //                    .authenticationProvider(authenticationProvider)
                     .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userSecurityService), UsernamePasswordAuthenticationFilter.class);

@@ -12,7 +12,7 @@ public interface SocialService {
 
     Social getSocialById(Long id);
 
-    List<Social> getAllSocial();
+    List<Social> getAllSocialByUserId(Long userId);
 
     void deleteSocialById(Long id);
 

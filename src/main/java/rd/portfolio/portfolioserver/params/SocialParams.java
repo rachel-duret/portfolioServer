@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SocialParams {
+    private Long userId;
     private String name;
     private String url;
     private String imageUrl;

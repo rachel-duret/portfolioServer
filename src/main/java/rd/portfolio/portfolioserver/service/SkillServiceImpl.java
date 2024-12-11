@@ -1,6 +1,7 @@
 package rd.portfolio.portfolioserver.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.SkillAlreadyExistException;
@@ -20,15 +21,20 @@ import java.util.Map;
 public class SkillServiceImpl implements SkillService {
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
+    private final SecurityUtil securityUtil;
 
     @Override
     public Skill save(SkillParams skillParams) {
+        User user = this.securityUtil.ensureLoggedUser(skillParams.getUserId());
         boolean isExist = this.existsByName(skillParams.getName());
         if (isExist) {
             throw new SkillAlreadyExistException();
         }
         this.validateSkillParams(skillParams);
+
         Skill skill = new Skill();
+        skill.setUser(user);
         this.applySkill(skillParams, skill);
 
         return skillRepository.save(skill);
@@ -46,6 +52,8 @@ public class SkillServiceImpl implements SkillService {
 
     @Override
     public void delete(Long id) {
+        Skill skill = this.findById(id);
+        this.securityUtil.ensureLoggedUser(skill.getUser().getId());
         if (!this.existsById(id)) {
             throw new SkillNotFoundException("Skill with id " + id + " not found");
         }
@@ -54,11 +62,14 @@ public class SkillServiceImpl implements SkillService {
 
     @Override
     public Skill update(Long id, SkillParams skillParams) {
+        User user = this.securityUtil.ensureLoggedUser(skillParams.getUserId());
         if (!this.existsById(id)) {
             throw new SkillNotFoundException("Skill with id " + id + " not found");
         }
+
         this.validateSkillParams(skillParams);
         Skill skill = new Skill();
+        skill.setUser(user);
         this.applySkill(skillParams, skill);
         return skillRepository.save(skill);
     }
@@ -93,9 +104,6 @@ public class SkillServiceImpl implements SkillService {
         skill.setName(skillParams.getName());
         skill.setImage(skillParams.getImage());
         skill.setUrl(skillParams.getUrl());
-        // TODO to change the user from auth
-        User user = userRepository.findById(3L).get();
-        skill.setUser(user);
     }
 
 }

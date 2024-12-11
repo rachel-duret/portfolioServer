@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SkillParams {
+    Long userId;
     String name;
     String image;
     String url;
