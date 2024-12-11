@@ -76,12 +76,12 @@
             <column name="image_url" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <!--            <column name="user_id" type="BIGINT">-->
-            <!--                <constraints nullable="false" foreignKeyName="fk_user_social" references="user(id)"/>-->
-            <!--            </column>-->
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
             </column>
             <column name="updated_at" type="TIMESTAMP">
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_social" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -105,9 +105,9 @@
             </column>
             <column name="updated_at" type="TIMESTAMP">
             </column>
-            <!--            <column name="user_id" type="BIGINT">-->
-            <!--                <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>-->
-            <!--            </column>-->
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -126,13 +126,15 @@
             <column name="url" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="description" type="text">
+            </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
             </column>
             <column name="updated_at" type="TIMESTAMP">
             </column>
-            <!--            <column name="user_id" type="BIGINT">-->
-            <!--                <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>-->
-            <!--            </column>-->
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_project" references="user(id)"/>
+            </column>
         </createTable>
     </changeSet>
 
