@@ -1,18 +1,17 @@
 package rd.portfolio.portfolioserver.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.ProjectAlreadyExistException;
 import rd.portfolio.portfolioserver.exception.ProjectNotFoundException;
-import rd.portfolio.portfolioserver.exception.SkillNotFoundException;
 import rd.portfolio.portfolioserver.model.Project;
 import rd.portfolio.portfolioserver.model.User;
 import rd.portfolio.portfolioserver.params.ProjectParams;
 import rd.portfolio.portfolioserver.repository.ProjectRepository;
-import rd.portfolio.portfolioserver.repository.UserRepository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +19,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
-    private final ProjectService projectService;
-    private final UserRepository userRepository;
-    private final UserDetailsService userDetailsService;
     private final SecurityUtil securityUtil;
     private final ProjectRepository projectRepository;
 
     @Override
     public Project save(ProjectParams projectParams) {
+
         User user = this.securityUtil.ensureLoggedUser(projectParams.getUserId());
         boolean isExist = this.existsByName(projectParams.getName());
         if (isExist) {
@@ -54,11 +51,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void delete(Long id) {
-        Project project = this.projectRepository.findById(id).orElseThrow();
+        Project project = this.projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
         this.securityUtil.ensureLoggedUser(project.getUser().getId());
-        if (!this.existsById(id)) {
-            throw new SkillNotFoundException("Skill with id " + id + " not found");
-        }
         projectRepository.deleteById(id);
     }
 
@@ -67,7 +61,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.securityUtil.ensureLoggedUser(projectParams.getUserId());
         Project project = this.projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
         this.validateProjectParams(projectParams);
-
+        project.setUpdatedAt(Timestamp.from(Instant.now()));
         this.applyProject(projectParams, project);
         return projectRepository.save(project);
     }
@@ -102,6 +96,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setName(projectParams.getName());
         project.setImage(projectParams.getImage());
         project.setUrl(projectParams.getUrl());
+        project.setDescription(projectParams.getDescription());
     }
 
 }

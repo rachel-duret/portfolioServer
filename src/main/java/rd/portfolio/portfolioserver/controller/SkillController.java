@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/skill")
+@RequestMapping("/skills")
 public class SkillController {
     private final SkillService skillService;
 
@@ -35,7 +35,7 @@ public class SkillController {
         return ResponseEntity.ok(skills.stream().map(Skill::convertToDTO).toList());
     }
 
-    @PostMapping("")
+    @PostMapping("/skill")
     public ResponseEntity<SkillDTO> createSkill(@RequestBody SkillParams skillParams) {
         Skill skill = skillService.save(skillParams);
 
@@ -48,7 +48,7 @@ public class SkillController {
         return ResponseEntity.ok(skill.convertToDTO());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSkill(@PathVariable Long id) {
         skillService.delete(id);
         return ResponseEntity.noContent().build();

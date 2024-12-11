@@ -14,4 +14,5 @@ public class ProjectParams {
     String name;
     String image;
     String url;
+    String description;
 }

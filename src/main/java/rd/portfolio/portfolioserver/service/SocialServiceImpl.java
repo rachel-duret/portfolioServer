@@ -1,21 +1,17 @@
 package rd.portfolio.portfolioserver.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.SocialAlreadyExistException;
 import rd.portfolio.portfolioserver.exception.SocialNotFoundException;
-import rd.portfolio.portfolioserver.exception.UserNotFoundException;
 import rd.portfolio.portfolioserver.model.Social;
 import rd.portfolio.portfolioserver.model.User;
 import rd.portfolio.portfolioserver.params.SocialParams;
 import rd.portfolio.portfolioserver.repository.SocialRepository;
-import rd.portfolio.portfolioserver.repository.UserRepository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,30 +19,19 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class SocialServiceImpl implements SocialService {
+    private final SecurityUtil securityUtil;
     private final SocialRepository socialRepository;
-    private final UserRepository userRepository;
-    private final UserDetailsService userDetailsService;
 
     @Override
     public Social createSocial(SocialParams socialParams) {
+        User user = this.securityUtil.ensureLoggedUser(socialParams.getUserId());
         if (this.socialRepository.existsByName(socialParams.getName())) {
             throw new SocialAlreadyExistException();
         }
         Social social = new Social();
-        social.setName(socialParams.getName());
-        social.setUrl(socialParams.getUrl());
-        social.setImageUrl(socialParams.getImageUrl());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(authentication.getName());
-        User user = this.userRepository.findById(socialParams.getUserId()).orElseThrow(UserNotFoundException::new);
-        if (!user.getUsername().equals(userDetails.getUsername())) {
-            throw new UserNotFoundException();
-        }
-
-        if (!user.getUsername().equals(userDetails.getUsername())) {
-            throw new UserNotFoundException();
-        }
         social.setUser(user);
+        this.applySocial(socialParams, social);
+
         return this.socialRepository.save(social);
 
     }
@@ -55,9 +40,8 @@ public class SocialServiceImpl implements SocialService {
     public Social updateSocial(Long id, SocialParams socialParams) {
         Social social = this.getSocialById(id);
         this.validateSocialParams(socialParams);
-        social.setName(socialParams.getName());
-        social.setUrl(socialParams.getUrl());
-        social.setImageUrl(socialParams.getImageUrl());
+        this.applySocial(socialParams, social);
+        social.setUpdatedAt(Timestamp.from(Instant.now()));
 
         return this.socialRepository.save(social);
     }
@@ -102,6 +86,12 @@ public class SocialServiceImpl implements SocialService {
         if (!errors.isEmpty()) {
             throw new InvalidParameterException(errors);
         }
+    }
+
+    private void applySocial(SocialParams socialParams, Social social) {
+        social.setName(socialParams.getName());
+        social.setUrl(socialParams.getUrl());
+        social.setImageUrl(socialParams.getImageUrl());
     }
 
 }

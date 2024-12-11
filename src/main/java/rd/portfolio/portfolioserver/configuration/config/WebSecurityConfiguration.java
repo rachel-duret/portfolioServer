@@ -46,7 +46,7 @@ public class WebSecurityConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(req -> req.requestMatchers("/auth/*")
                                                      .permitAll()
-                                                     .requestMatchers(HttpMethod.GET, "/user/*", "/skill", "/profile/*", "/project/*", "/social/*", "/contact")
+                                                     .requestMatchers(HttpMethod.GET, "/users/*", "/skills/*", "/profiles/*", "/projects/*", "/social/*", "/contact")
                                                      .permitAll()
                                                      .anyRequest()
                                                      .authenticated())

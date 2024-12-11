@@ -12,6 +12,8 @@ import rd.portfolio.portfolioserver.params.SkillParams;
 import rd.portfolio.portfolioserver.repository.SkillRepository;
 import rd.portfolio.portfolioserver.repository.UserRepository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,7 @@ public class SkillServiceImpl implements SkillService {
         this.securityUtil.ensureLoggedUser(skillParams.getUserId());
         this.validateSkillParams(skillParams);
         Skill skill = this.skillRepository.findById(id).orElseThrow(SkillNotFoundException::new);
+        skill.setUpdatedAt(Timestamp.from(Instant.now()));
         this.applySkill(skillParams, skill);
         return skillRepository.save(skill);
     }
