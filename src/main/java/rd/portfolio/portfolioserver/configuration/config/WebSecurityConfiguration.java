@@ -14,9 +14,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import rd.portfolio.portfolioserver.configuration.jwt.JwtAuthenticationFilter;
 import rd.portfolio.portfolioserver.configuration.jwt.JwtUtil;
 import rd.portfolio.portfolioserver.service.UserDetailService;
+
+import java.util.List;
 
 ;
 
@@ -28,6 +33,16 @@ public class WebSecurityConfiguration {
     private final UserDetailService userSecurityService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtUtil jwtUtil;
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,16 +58,16 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(req -> req.requestMatchers("/auth/*")
-                                                     .permitAll()
-                                                     .requestMatchers(HttpMethod.GET, "/users/*", "/skills/*", "/profiles/*", "/projects/*", "/social/*", "/contact")
-                                                     .permitAll()
-                                                     .anyRequest()
-                                                     .authenticated())
-                    .sessionManagement(ssession -> ssession.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    //                    .authenticationProvider(authenticationProvider)
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userSecurityService), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.GET, "/**")
+                                                 .permitAll()
+                                                 .anyRequest()
+                                                 .authenticated())
+                .sessionManagement(ssession -> ssession.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                //                    .authenticationProvider(authenticationProvider)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userSecurityService), UsernamePasswordAuthenticationFilter.class);
         //                .exceptionHandling(ex->ex.authenticationEntryPoint(unauthorizedHandler))
 
         return httpSecurity.build();
