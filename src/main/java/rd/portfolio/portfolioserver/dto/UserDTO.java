@@ -5,21 +5,28 @@ import lombok.Getter;
 import lombok.Setter;
 import rd.portfolio.portfolioserver.model.User;
 
+import java.util.List;
+
 @Data
 @Setter
 @Getter
 public class UserDTO {
     private Long id;
     private String username;
-    private String password;
     private String email;
+    private ProfileDTO profile;
+    private List<SocialDTO> socials;
+    private List<SkillDTO> skills;
+    private List<ProjectDTO> projects;
+    private List<ExperienceDTO> experience;
 
     public User convertToUser(UserDTO userDTO) {
 
         return new User() {{
             setUsername(userDTO.getUsername());
-            setPassword(userDTO.getPassword());
             setEmail(userDTO.getEmail());
+            setProfile(userDTO.getProfile().convertToProfile());
+            setExperience(userDTO.getExperience());
         }};
     }
 

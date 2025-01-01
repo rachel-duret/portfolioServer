@@ -48,6 +48,7 @@ public class Project {
         projectDTO.setId(id);
         projectDTO.setName(name);
         projectDTO.setUrl(url);
+        projectDTO.setImage(image);
         return projectDTO;
     }
 }

@@ -8,28 +8,39 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
-import rd.portfolio.portfolioserver.dto.SkillDTO;
+import rd.portfolio.portfolioserver.dto.ExperienceDTO;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "skills", schema = "portfolio")
-public class Skill {
+@Entity
+@Table(name = "project")
+public class Experience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
-    @Column(name = "image", nullable = false)
+    @Transient
+    @Column(name = "technologies")
+    private List<String> technologies;
+    @Column(name = "image")
     private String image;
-    @Column(name = "url", nullable = false)
+    @Column(name = "url")
     private String url;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "started_at")
+    private Timestamp startedAt;
+    @Column(name = "ended_at")
+    private Timestamp endedAt;
     @Column(name = "created_at")
     private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
@@ -39,12 +50,12 @@ public class Skill {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public SkillDTO convertToDTO() {
-        SkillDTO skillDTO = new SkillDTO();
-        skillDTO.setId(id);
-        skillDTO.setName(name);
-        skillDTO.setUrl(url);
-        skillDTO.setImage(image);
-        return skillDTO;
+    public ExperienceDTO convertToDTO() {
+        ExperienceDTO experienceDTO = new ExperienceDTO();
+        experienceDTO.setId(id);
+        experienceDTO.setName(name);
+        experienceDTO.setUrl(url);
+        experienceDTO.setImage(image);
+        return experienceDTO;
     }
 }

@@ -42,19 +42,25 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Skill> skill;
+    private List<Skill> skills;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Social> social;
+    private List<Social> socials;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Project> project;
+    private List<Project> projects;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Experience> experiences;
 
     public UserDTO conventToDTO() {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(this.id);
         userDTO.setUsername(this.getUsername());
-        userDTO.setPassword(this.getPassword());
         userDTO.setEmail(this.getEmail());
+        userDTO.setProfile(this.profile.conventToDTO());
+        userDTO.setSkills(this.getSkills().stream().map(Skill::convertToDTO).toList());
+        userDTO.setSocials(this.getSocials().stream().map(Social::convertToDTO).toList());
+        userDTO.setProjects(this.getProjects().stream().map(Project::convertToDTO).toList());
+        //userDTO.setExperience(this.getExperiences().stream().map(Experience::convertToDTO).toList());
         return userDTO;
     }
 }
