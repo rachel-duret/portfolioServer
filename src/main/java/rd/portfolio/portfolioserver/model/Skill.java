@@ -38,6 +38,9 @@ public class Skill {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @ManyToOne
+    @JoinColumn(name="experience_id")
+    private Experience experience;
 
     public SkillDTO convertToDTO() {
         SkillDTO skillDTO = new SkillDTO();

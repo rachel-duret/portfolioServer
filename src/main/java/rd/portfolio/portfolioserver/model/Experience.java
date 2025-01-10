@@ -1,26 +1,19 @@
 package rd.portfolio.portfolioserver.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import rd.portfolio.portfolioserver.dto.ExperienceDTO;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "project")
+@Table(name = "experience")
 public class Experience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +21,8 @@ public class Experience {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Transient
-    @Column(name = "technologies")
-    private List<String> technologies;
+    @Column(name = "company")
+    private String company;
     @Column(name = "image")
     private String image;
     @Column(name = "url")
@@ -50,12 +42,21 @@ public class Experience {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "technologies")
+    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> technologies=new ArrayList<>();
+
     public ExperienceDTO convertToDTO() {
         ExperienceDTO experienceDTO = new ExperienceDTO();
         experienceDTO.setId(id);
         experienceDTO.setName(name);
         experienceDTO.setUrl(url);
         experienceDTO.setImage(image);
+        experienceDTO.setDescription(description);
+        experienceDTO.setCompany(company);
+        experienceDTO.setTechnologies(technologies);
+        experienceDTO.setStartedAt(startedAt.toString());
+        experienceDTO.setEndedAt(endedAt.toString());
         return experienceDTO;
     }
 }

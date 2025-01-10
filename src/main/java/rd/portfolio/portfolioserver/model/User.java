@@ -56,11 +56,13 @@ public class User {
         userDTO.setId(this.id);
         userDTO.setUsername(this.getUsername());
         userDTO.setEmail(this.getEmail());
+        if (this.profile !=null){
         userDTO.setProfile(this.profile.conventToDTO());
+        }
         userDTO.setSkills(this.getSkills().stream().map(Skill::convertToDTO).toList());
         userDTO.setSocials(this.getSocials().stream().map(Social::convertToDTO).toList());
         userDTO.setProjects(this.getProjects().stream().map(Project::convertToDTO).toList());
-        //userDTO.setExperience(this.getExperiences().stream().map(Experience::convertToDTO).toList());
+        userDTO.setExperience(this.getExperiences().stream().map(Experience::convertToDTO).toList());
         return userDTO;
     }
 }
