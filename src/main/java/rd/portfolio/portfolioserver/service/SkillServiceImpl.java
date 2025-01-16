@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.SkillAlreadyExistException;
 import rd.portfolio.portfolioserver.exception.SkillNotFoundException;
+import rd.portfolio.portfolioserver.model.Experience;
 import rd.portfolio.portfolioserver.model.Skill;
 import rd.portfolio.portfolioserver.model.User;
 import rd.portfolio.portfolioserver.params.SkillParams;
@@ -100,6 +101,9 @@ public class SkillServiceImpl implements SkillService {
         skill.setName(skillParams.getName());
         skill.setImage(skillParams.getImage());
         skill.setUrl(skillParams.getUrl());
+        Experience experience = new Experience();
+        experience.setId(1L);
+
     }
 
 }

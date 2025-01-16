@@ -63,7 +63,7 @@
     </changeSet>
     <!--    Social-->
     <changeSet id="3" author="rachel-d">
-        <createTable tableName="social">
+        <createTable tableName="social" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -88,7 +88,7 @@
 
     <!--    Experience-->
     <changeSet id="4" author="rachel-d">
-        <createTable tableName="experience">
+        <createTable tableName="experience" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -122,7 +122,7 @@
 
     <!--    Project-->
     <changeSet id="5" author="rachel-d">
-        <createTable tableName="project">
+        <createTable tableName="project" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -148,7 +148,7 @@
     </changeSet>
     <!--    Skill-->
     <changeSet id="6" author="rachel-d">
-        <createTable tableName="skills">
+        <createTable tableName="skills" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -168,12 +168,57 @@
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_user_skill" references="user(id)"/>
             </column>
-            <column name="experience_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_experience_skill" references="experience(id)"/>
-            </column>
+
         </createTable>
     </changeSet>
 
+    <changeSet id="7" author="rachel-d">
+        <createTable tableName="technologies_skills" schemaName="portfolio">
+            <column name="experience_id" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="skill_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
 
+    </changeSet>
+    <changeSet id="8" author="rachel">
+        <addForeignKeyConstraint baseTableName="technologies_skills" baseColumnNames="experience_id"
+                                 referencedTableName="experience"
+                                 referencedColumnNames="id"  constraintName="fk_skill_experience"/>
+
+        <addForeignKeyConstraint baseTableName="technologies_skills" baseColumnNames="skill_id" constraintName="fk_experience_skill"
+                                 referencedTableName="skills"
+                                 referencedColumnNames="id" />
+    </changeSet>
+    <changeSet id="1737031683932-1" author="rachel">
+
+        <addUniqueConstraint
+                tableName="technologies_skills"
+                columnNames="experience_id, skill_id"
+                constraintName="uq_technologies_skills"
+        />
+    </changeSet>
+    <changeSet id="9" author="rachel">
+        <createTable tableName="experience_summary">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="experience_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="summary" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="experience_summary" baseColumnNames="experience_id"
+                                 constraintName="fk_experience_summary"
+                                 referencedTableName="experience"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="experience_summary" indexName="idx_experience_id">
+            <column name="experience_id"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

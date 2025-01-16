@@ -63,7 +63,8 @@ public class WebSecurityConfiguration {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.GET, "/**").permitAll()
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers(HttpMethod.GET, "/**").permitAll()
                                                  .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()
                                                  .anyRequest()
                                                  .authenticated())

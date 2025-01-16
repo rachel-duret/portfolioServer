@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -37,14 +38,23 @@ public class Experience {
     private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+    @ElementCollection
+    @CollectionTable(name = "experience_summary")
+    @Column(name = "summaries")
+    private List<Summary> summaries = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "technologies")
-    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Skill> technologies=new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "technologies_skills",
+            joinColumns = @JoinColumn(name = "experience_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+
+    )
+    private List<Skill> technologies = new ArrayList<>();
 
     public ExperienceDTO convertToDTO() {
         ExperienceDTO experienceDTO = new ExperienceDTO();
@@ -54,9 +64,10 @@ public class Experience {
         experienceDTO.setImage(image);
         experienceDTO.setDescription(description);
         experienceDTO.setCompany(company);
-        experienceDTO.setTechnologies(technologies);
+        experienceDTO.setTechnologies(technologies.stream().map(Skill::convertToDTO).collect(Collectors.toList()));
         experienceDTO.setStartedAt(startedAt.toString());
         experienceDTO.setEndedAt(endedAt.toString());
+        experienceDTO.setSummaries(summaries);
         return experienceDTO;
     }
 }

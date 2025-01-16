@@ -6,6 +6,7 @@ import lombok.Setter;
 import rd.portfolio.portfolioserver.model.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Setter
@@ -18,7 +19,7 @@ public class UserDTO {
     private List<SocialDTO> socials;
     private List<SkillDTO> skills;
     private List<ProjectDTO> projects;
-    private List<ExperienceDTO> experience;
+    private List<ExperienceDTO> experiences;
 
     public User convertToUser(UserDTO userDTO) {
 
@@ -26,7 +27,7 @@ public class UserDTO {
             setUsername(userDTO.getUsername());
             setEmail(userDTO.getEmail());
             setProfile(userDTO.getProfile().convertToProfile());
-            setExperience(userDTO.getExperience());
+            setExperiences(userDTO.getExperiences().stream().map(ExperienceDTO::convertToExperience).collect(Collectors.toList()));
         }};
     }
 

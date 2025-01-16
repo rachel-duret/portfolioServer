@@ -10,9 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProjectParams {
-    Long userId;
-    String name;
-    String image;
-    String url;
-    String description;
+    private Long userId;
+    private String name;
+    private String image;
+    private String url;
+    private String description;
 }
