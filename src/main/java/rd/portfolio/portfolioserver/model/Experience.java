@@ -38,9 +38,8 @@ public class Experience {
     private Timestamp createdAt = Timestamp.from(Instant.now());
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-    @ElementCollection
-    @CollectionTable(name = "experience_summary")
-    @Column(name = "summaries")
+
+   @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Summary> summaries = new ArrayList<>();
 
     @ManyToOne
@@ -67,7 +66,7 @@ public class Experience {
         experienceDTO.setTechnologies(technologies.stream().map(Skill::convertToDTO).collect(Collectors.toList()));
         experienceDTO.setStartedAt(startedAt.toString());
         experienceDTO.setEndedAt(endedAt.toString());
-        experienceDTO.setSummaries(summaries);
+        experienceDTO.setSummaries(summaries.stream().map(Summary::convertToDTO).collect(Collectors.toList()));
         return experienceDTO;
     }
 }

@@ -23,7 +23,7 @@ public class ExperienceDTO {
     private String url;
     private String description;
     private List<SkillDTO> technologies;
-    private List<Summary> summaries;
+    private List<SummaryDTO> summaries;
     private String startedAt;
     private String endedAt;
 
@@ -36,7 +36,7 @@ public class ExperienceDTO {
         experience.setUrl(url);
         experience.setDescription(description);
         experience.setTechnologies(technologies.stream().map(SkillDTO::convertToSkill).collect(Collectors.toList()));
-        experience.setSummaries(summaries);
+        experience.setSummaries(summaries.stream().map(SummaryDTO::convertToSummary).collect(Collectors.toList()));
         experience.setStartedAt(Timestamp.valueOf(startedAt));
         experience.setEndedAt(Timestamp.valueOf(endedAt));
         return experience;

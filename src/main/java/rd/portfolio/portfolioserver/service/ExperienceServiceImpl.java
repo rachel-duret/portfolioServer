@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.dto.SkillDTO;
 import rd.portfolio.portfolioserver.exception.*;
-import rd.portfolio.portfolioserver.model.Experience;
-import rd.portfolio.portfolioserver.model.Project;
-import rd.portfolio.portfolioserver.model.Skill;
-import rd.portfolio.portfolioserver.model.User;
+import rd.portfolio.portfolioserver.model.*;
 import rd.portfolio.portfolioserver.params.ExperienceParams;
 import rd.portfolio.portfolioserver.params.ProjectParams;
 import rd.portfolio.portfolioserver.repository.ExperienceRepository;
 import rd.portfolio.portfolioserver.repository.ProjectRepository;
+import rd.portfolio.portfolioserver.repository.SummaryRepository;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -25,6 +23,7 @@ import java.util.stream.Collectors;
 public class ExperienceServiceImpl implements ExperienceService {
     private final SecurityUtil securityUtil;
     private final ExperienceRepository experienceRepository;
+    private final SummaryRepository summaryRepository;
 
 
     @Override
@@ -38,7 +37,13 @@ public class ExperienceServiceImpl implements ExperienceService {
         Experience experience = new Experience();
         this.applyExperience(experienceParams, experience);
         experience.setUser(user);
-        return experienceRepository.save(experience);
+        Experience finalExperience = experienceRepository.save(experience);
+        List<Summary> summaries = experienceParams.getSummaries().stream().map(summary -> {
+            summary.setExperience(finalExperience);
+            return this.summaryRepository.save(summary);
+        }).toList();
+        finalExperience.setSummaries(summaries);
+        return finalExperience;
     }
 
     @Override
@@ -53,10 +58,10 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public void delete(Long id) {
-    Experience experience = this.findById(id);
-    this.securityUtil.ensureLoggedUser(experience.getUser().getId());
-    experience.getTechnologies().removeAll(experience.getTechnologies());
-    this.experienceRepository.delete(experience);
+        Experience experience = this.findById(id);
+        this.securityUtil.ensureLoggedUser(experience.getUser().getId());
+        experience.getTechnologies().removeAll(experience.getTechnologies());
+        this.experienceRepository.delete(experience);
     }
 
     @Override
@@ -77,8 +82,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setDescription(experienceParams.getDescription());
         experience.setStartedAt(Timestamp.from(Instant.parse(experienceParams.getStartedAt())));
         experience.setEndedAt(Timestamp.from(Instant.parse(experienceParams.getEndedAt())));
-        List<Skill> skills=experienceParams.getTechnologies().stream().map(SkillDTO::convertToSkill).toList();
-        experience.setSummaries(experienceParams.getSummaries());
+        List<Skill> skills = experienceParams.getTechnologies().stream().map(SkillDTO::convertToSkill).toList();
         experience.setTechnologies(skills);
 
     }

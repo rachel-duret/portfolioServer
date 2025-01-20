@@ -200,25 +200,19 @@
                 constraintName="uq_technologies_skills"
         />
     </changeSet>
+<!--    Summaries-->
     <changeSet id="9" author="rachel">
-        <createTable tableName="experience_summary">
-            <column name="id" type="BIGINT">
+        <createTable tableName="summaries">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="experience_id" type="BIGINT">
+            <column name="value" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="summary" type="varchar(255)">
-                <constraints nullable="false"/>
+            <column name="experience_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_experience_summary" references="experience(id)"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="experience_summary" baseColumnNames="experience_id"
-                                 constraintName="fk_experience_summary"
-                                 referencedTableName="experience"
-                                 referencedColumnNames="id"/>
-        <createIndex tableName="experience_summary" indexName="idx_experience_id">
-            <column name="experience_id"/>
-        </createIndex>
     </changeSet>
 
 </databaseChangeLog>
