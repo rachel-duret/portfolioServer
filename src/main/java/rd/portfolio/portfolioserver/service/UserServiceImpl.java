@@ -6,13 +6,18 @@ import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.dto.RoleType;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
+import rd.portfolio.portfolioserver.model.Profile;
 import rd.portfolio.portfolioserver.model.User;
+import rd.portfolio.portfolioserver.params.UpdateProfileParams;
 import rd.portfolio.portfolioserver.params.UpdateUserParam;
 import rd.portfolio.portfolioserver.params.UserParams;
+import rd.portfolio.portfolioserver.repository.ProfileRepository;
 import rd.portfolio.portfolioserver.repository.UserRepository;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -21,6 +26,7 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProfileRepository profileRepository;
 
     @Override
     public User getUserById(Long id) {
@@ -40,7 +46,12 @@ public class UserServiceImpl implements UserService {
         User newUser = new User();
         this.applyToUser(newUser, userParams);
 
-        return this.userRepository.save(newUser);
+       User finalUser= this.userRepository.save(newUser);
+        Profile profile= new Profile();
+        profile.setAboutMe("I have nothing to say!");
+        profile.setUser(finalUser);
+        this.profileRepository.save(profile);
+      return finalUser;
     }
 
     @Override
@@ -60,6 +71,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserExist(Long id) {
         return this.userRepository.existsById(id);
+    }
+
+    @Override
+    public Profile updateUserProfile(Long id, UpdateProfileParams updateProfileParams) {
+        User user = this.userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        this.validateUpdateUserProfileParams(updateProfileParams);
+        Profile profile = user.getProfile();
+        this.applyToProfile(profile, updateProfileParams, user);
+        return this.profileRepository.save(profile);
     }
 
     private void validateParams(User user, UserParams userParams) {
@@ -87,6 +107,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private void validateUpdateUserProfileParams(UpdateProfileParams updateProfileParams) {
+        HashMap<String, String> errors = new HashMap<>();
+        if (updateProfileParams.getAboutMe() == null || updateProfileParams.getAboutMe().isEmpty()) {
+            errors.put("aboutMe", "about me cannot be empty");
+        }
+        if (updateProfileParams.getImageUrl() == null || updateProfileParams.getImageUrl().isEmpty()) {
+            errors.put("imageUrl", "Image url cannot be empty");
+        }
+        if (!errors.isEmpty()) {
+            throw new InvalidParameterException();
+        }
+    }
+
     private void applyToUser(User user, UserParams userParams) {
         user.setUsername(userParams.getUsername());
         user.setPassword(passwordEncoder.encode(userParams.getPassword()));
@@ -103,15 +136,28 @@ public class UserServiceImpl implements UserService {
         user.setUsername(updateUserParam.getUsername());
         user.setEmail(updateUserParam.getEmail());
         user.setUpdatedAt(Timestamp.from(Instant.now()));
-        if (Objects.equals(updateUserParam.getUsername(), "rachel")) {
+        if (Objects.equals(updateUserParam.getUsername(), "rachel")) { // TODO move this to config
             user.setRole(RoleType.ADMIN.name());
         } else {
             user.setRole(RoleType.USER.name());
         }
     }
 
+    private void applyToProfile(Profile profile, UpdateProfileParams updateProfileParams, User user) {
+        profile.setBirthday(LocalDate.parse(updateProfileParams.getBirthday()));
+        profile.setPhone(updateProfileParams.getPhoneNumber());
+        profile.setImageUrl(updateProfileParams.getImageUrl());
+        profile.setAboutMe(updateProfileParams.getAboutMe());
+        profile.setProfession(updateProfileParams.getProfession());
+        profile.setSex(updateProfileParams.getSex());
+        profile.setUpdatedAt(Timestamp.from(Instant.now()));
+        profile.setUser(user);
+    }
+
     public boolean isUserExist(String name) {
         User user = this.userRepository.findByUsername(name);
         return user != null;
     }
+
+
 }

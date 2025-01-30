@@ -48,6 +48,7 @@ public class Profile {
     public ProfileDTO conventToDTO() {
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setId(this.id);
+        profileDTO.setPhone(this.getPhone());
         profileDTO.setImageUrl(this.getImageUrl());
         profileDTO.setAboutMe(this.getAboutMe());
         profileDTO.setProfession(this.getProfession());

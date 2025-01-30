@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import rd.portfolio.portfolioserver.dto.ProfileDTO;
 import rd.portfolio.portfolioserver.dto.UserDTO;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
+import rd.portfolio.portfolioserver.model.Profile;
 import rd.portfolio.portfolioserver.model.User;
+import rd.portfolio.portfolioserver.params.UpdateProfileParams;
 import rd.portfolio.portfolioserver.params.UpdateUserParam;
 import rd.portfolio.portfolioserver.params.UserParams;
 import rd.portfolio.portfolioserver.service.UserService;
@@ -70,6 +73,15 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(Authentication authentication, @PathVariable Long id) {
         this.userService.deleteUser(id);
+    }
+
+    @PutMapping("/{id}/profile")
+    public ProfileDTO updateUserProfile(@PathVariable Long id, @RequestBody UpdateProfileParams updateProfileParams) {
+        if (!this.userService.isUserExist(id)) {
+            throw new UserNotFoundException("User not found with id " + id);
+        }
+        Profile profile = this.userService.updateUserProfile(id, updateProfileParams);
+        return profile.conventToDTO();
     }
 
 }
