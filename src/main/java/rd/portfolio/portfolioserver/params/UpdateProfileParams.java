@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import rd.portfolio.portfolioserver.dto.HobbyDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Getter
@@ -19,4 +21,5 @@ public class UpdateProfileParams {
     private String aboutMe;
     private String profession;
     private String sex;
+    private List<HobbyDTO> hobbies;
 }

@@ -14,20 +14,26 @@ import java.util.stream.Collectors;
 public class UserDTO {
     private Long id;
     private String username;
+    private String firstName;
+    private String lastName;
     private String email;
     private ProfileDTO profile;
     private List<SocialDTO> socials;
     private List<SkillDTO> skills;
     private List<ProjectDTO> projects;
     private List<ExperienceDTO> experiences;
+    private List<HobbyDTO> hobbies;
 
     public User convertToUser(UserDTO userDTO) {
 
         return new User() {{
             setUsername(userDTO.getUsername());
+            setFirstName(userDTO.getFirstName());
+            setLastName(userDTO.getLastName());
             setEmail(userDTO.getEmail());
             setProfile(userDTO.getProfile().convertToProfile());
             setExperiences(userDTO.getExperiences().stream().map(ExperienceDTO::convertToExperience).collect(Collectors.toList()));
+            setHobbies(userDTO.getHobbies().stream().map(HobbyDTO::convertToHobby).collect(Collectors.toList()));
         }};
     }
 

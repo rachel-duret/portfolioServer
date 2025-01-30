@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import rd.portfolio.portfolioserver.dto.RoleType;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
+import rd.portfolio.portfolioserver.model.Hobby;
 import rd.portfolio.portfolioserver.model.Profile;
 import rd.portfolio.portfolioserver.model.User;
 import rd.portfolio.portfolioserver.params.UpdateProfileParams;
 import rd.portfolio.portfolioserver.params.UpdateUserParam;
 import rd.portfolio.portfolioserver.params.UserParams;
+import rd.portfolio.portfolioserver.repository.HobbyRepository;
 import rd.portfolio.portfolioserver.repository.ProfileRepository;
 import rd.portfolio.portfolioserver.repository.UserRepository;
 
@@ -19,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProfileRepository profileRepository;
+    private final HobbyRepository hobbyRepository;
 
     @Override
     public User getUserById(Long id) {
@@ -46,12 +50,12 @@ public class UserServiceImpl implements UserService {
         User newUser = new User();
         this.applyToUser(newUser, userParams);
 
-       User finalUser= this.userRepository.save(newUser);
-        Profile profile= new Profile();
+        User finalUser = this.userRepository.save(newUser);
+        Profile profile = new Profile();
         profile.setAboutMe("I have nothing to say!");
         profile.setUser(finalUser);
         this.profileRepository.save(profile);
-      return finalUser;
+        return finalUser;
     }
 
     @Override
@@ -79,6 +83,13 @@ public class UserServiceImpl implements UserService {
         this.validateUpdateUserProfileParams(updateProfileParams);
         Profile profile = user.getProfile();
         this.applyToProfile(profile, updateProfileParams, user);
+        if (!updateProfileParams.getHobbies().isEmpty()) {
+            updateProfileParams.getHobbies().forEach(hobbyDTO -> {
+                Hobby hobby = hobbyDTO.convertToHobby();
+                hobby.setUser(user);
+                this.hobbyRepository.save(hobby);
+            });
+        }
         return this.profileRepository.save(profile);
     }
 
@@ -89,6 +100,12 @@ public class UserServiceImpl implements UserService {
         }
         if (userParams.getUsername() == null || userParams.getUsername().isEmpty()) {
             errors.put("username", "Username cannot be empty");
+        }
+        if (userParams.getFirstName() == null || userParams.getFirstName().isEmpty()) {
+            errors.put("firstName", "firstName cannot be empty");
+        }
+        if (userParams.getLastName() == null || userParams.getLastName().isEmpty()) {
+            errors.put("lastName", "lastName cannot be empty");
         }
         if (!errors.isEmpty()) {
             // TODO put error message to exception
@@ -101,6 +118,7 @@ public class UserServiceImpl implements UserService {
         if (updateUserParam.getUsername() == null || updateUserParam.getUsername().isEmpty()) {
             errors.put("username", "Username cannot be empty");
         }
+
         if (!errors.isEmpty()) {
             // TODO put error message to exception
             throw new InvalidParameterException();
@@ -122,6 +140,8 @@ public class UserServiceImpl implements UserService {
 
     private void applyToUser(User user, UserParams userParams) {
         user.setUsername(userParams.getUsername());
+        user.setFirstName(userParams.getFirstName());
+        user.setLastName(userParams.getLastName());
         user.setPassword(passwordEncoder.encode(userParams.getPassword()));
         user.setEmail(userParams.getEmail());
 

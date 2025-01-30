@@ -28,6 +28,10 @@ public class User {
     private Long id;
     @Column(name = "username", nullable = false, unique = true)
     private String username;
+    @Column(name = "first_name", nullable = false, unique = true)
+    private String firstName;
+    @Column(name = "last_name", nullable = false, unique = true)
+    private String lastName;
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "email", nullable = false, unique = true)
@@ -51,6 +55,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Experience> experiences;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Hobby> hobbies;
     public UserDTO conventToDTO() {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(this.id);
@@ -63,6 +69,7 @@ public class User {
         userDTO.setSocials(this.getSocials().stream().map(Social::convertToDTO).toList());
         userDTO.setProjects(this.getProjects().stream().map(Project::convertToDTO).toList());
         userDTO.setExperiences(this.getExperiences().stream().map(Experience::convertToDTO).toList());
+        userDTO.setHobbies(this.getHobbies().stream().map(Hobby::convertToDTO).toList());
         return userDTO;
     }
 }
