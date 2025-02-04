@@ -10,7 +10,7 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    User getUserByName(String name);
+    User getUserByLastnameAndFirstname(String lastname, String firstname);
 
     User createUser(UserParams userParam);
 

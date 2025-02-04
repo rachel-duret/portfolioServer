@@ -29,9 +29,9 @@ public class User {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
     @Column(name = "first_name", nullable = false, unique = true)
-    private String firstName;
+    private String firstname;
     @Column(name = "last_name", nullable = false, unique = true)
-    private String lastName;
+    private String lastname;
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "email", nullable = false, unique = true)

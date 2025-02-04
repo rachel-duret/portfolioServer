@@ -40,10 +40,10 @@ public class UserController {
 
     }
 
-    @GetMapping("/duret/{name}")
-    public ResponseEntity<UserDTO> getUserByName(@PathVariable String name) {
+    @GetMapping("/{lastName}/{firstName}")
+    public ResponseEntity<UserDTO> getUserByName(@PathVariable String lastName, @PathVariable String firstName) {
 
-        User user = this.userService.getUserByName(name);
+        User user = this.userService.getUserByLastnameAndFirstname(lastName, firstName);
         return new ResponseEntity<>(user.conventToDTO(), HttpStatus.OK);
 
     }

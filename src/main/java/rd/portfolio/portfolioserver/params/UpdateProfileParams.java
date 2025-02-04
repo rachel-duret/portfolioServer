@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import rd.portfolio.portfolioserver.dto.HobbyDTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data

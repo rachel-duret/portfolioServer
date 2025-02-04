@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class UserDTO {
     private Long id;
     private String username;
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String email;
     private ProfileDTO profile;
     private List<SocialDTO> socials;
@@ -28,8 +28,8 @@ public class UserDTO {
 
         return new User() {{
             setUsername(userDTO.getUsername());
-            setFirstName(userDTO.getFirstName());
-            setLastName(userDTO.getLastName());
+            setFirstname(userDTO.getFirstname());
+            setLastname(userDTO.getLastname());
             setEmail(userDTO.getEmail());
             setProfile(userDTO.getProfile().convertToProfile());
             setExperiences(userDTO.getExperiences().stream().map(ExperienceDTO::convertToExperience).collect(Collectors.toList()));

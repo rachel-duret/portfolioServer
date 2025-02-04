@@ -3,7 +3,9 @@ package rd.portfolio.portfolioserver.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import rd.portfolio.portfolioserver.dto.HobbyDTO;
 import rd.portfolio.portfolioserver.dto.RoleType;
+import rd.portfolio.portfolioserver.exception.HobbyNotFoundException;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
 import rd.portfolio.portfolioserver.model.Hobby;
@@ -19,9 +21,8 @@ import rd.portfolio.portfolioserver.repository.UserRepository;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -39,8 +40,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByName(String name) {
-        return this.userRepository.findByUsername(name);
+    public User getUserByLastnameAndFirstname(String lastname, String firstname) {
+        return this.userRepository.findByLastnameAndFirstname(lastname, firstname).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
         this.validateParams(user, userParams);
         User newUser = new User();
         this.applyToUser(newUser, userParams);
+        newUser.setHobbies(new ArrayList<>());
 
         User finalUser = this.userRepository.save(newUser);
         Profile profile = new Profile();
@@ -85,12 +87,24 @@ public class UserServiceImpl implements UserService {
         this.applyToProfile(profile, updateProfileParams, user);
         if (!updateProfileParams.getHobbies().isEmpty()) {
             updateProfileParams.getHobbies().forEach(hobbyDTO -> {
-                Hobby hobby = hobbyDTO.convertToHobby();
-                hobby.setUser(user);
-                this.hobbyRepository.save(hobby);
+             // TODO this update uncorrect
+                this.updateOrCreateHobby(user, hobbyDTO );
             });
         }
         return this.profileRepository.save(profile);
+    }
+
+    private void updateOrCreateHobby(User user, HobbyDTO hobbyDTO) {
+            if (hobbyDTO.getId() ==null){
+                Hobby newHobby = hobbyDTO.convertToHobby();
+                newHobby.setUser(user);
+                this.hobbyRepository.save(newHobby);
+            }else {
+                Hobby existHobby = this.hobbyRepository.findById(hobbyDTO.getId()).orElseThrow(HobbyNotFoundException::new);
+                existHobby.setName(hobbyDTO.getName());
+                existHobby.setImageUrl(hobbyDTO.getImageUrl());
+                this.hobbyRepository.save(existHobby);
+            }
     }
 
     private void validateParams(User user, UserParams userParams) {
@@ -140,8 +154,8 @@ public class UserServiceImpl implements UserService {
 
     private void applyToUser(User user, UserParams userParams) {
         user.setUsername(userParams.getUsername());
-        user.setFirstName(userParams.getFirstName());
-        user.setLastName(userParams.getLastName());
+        user.setFirstname(userParams.getFirstName());
+        user.setLastname(userParams.getLastName());
         user.setPassword(passwordEncoder.encode(userParams.getPassword()));
         user.setEmail(userParams.getEmail());
 
