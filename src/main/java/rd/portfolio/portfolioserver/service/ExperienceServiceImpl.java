@@ -28,12 +28,14 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public Experience save(ExperienceParams experienceParams) {
+        this.validateExperienceParams(experienceParams);
+
         User user = this.securityUtil.ensureLoggedUser(experienceParams.getUserId());
         boolean isExist = this.existsByName(experienceParams.getName());
         if (isExist) {
             throw new ExperienceAlreadyExistException();
         }
-        this.validateExperienceParams(experienceParams);
+
         Experience experience = new Experience();
         this.applyExperience(experienceParams, experience);
         experience.setUser(user);
@@ -71,6 +73,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         this.validateExperienceParams(experienceParams);
         experience.setUpdatedAt(Timestamp.from(Instant.now()));
         this.applyExperience(experienceParams, experience);
+        this.experienceRepository.save(experience);
         return experience;
     }
 
