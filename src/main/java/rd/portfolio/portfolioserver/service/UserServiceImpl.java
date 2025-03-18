@@ -7,6 +7,7 @@ import rd.portfolio.portfolioserver.dto.HobbyDTO;
 import rd.portfolio.portfolioserver.dto.RoleType;
 import rd.portfolio.portfolioserver.exception.HobbyNotFoundException;
 import rd.portfolio.portfolioserver.exception.InvalidParameterException;
+import rd.portfolio.portfolioserver.exception.UserAlreadyExistException;
 import rd.portfolio.portfolioserver.exception.UserNotFoundException;
 import rd.portfolio.portfolioserver.model.Hobby;
 import rd.portfolio.portfolioserver.model.Profile;
@@ -46,8 +47,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserParams userParams) {
-        User user = this.userRepository.findByUsername(userParams.getUsername());
-        this.validateParams(user, userParams);
+        boolean userNameExist = this.isUserNameExist(userParams.getUsername());
+        if (userNameExist) {
+            throw new UserAlreadyExistException();
+        }
+        this.validateParams(userParams);
         User newUser = new User();
         this.applyToUser(newUser, userParams);
         newUser.setHobbies(new ArrayList<>());
@@ -76,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUserExist(Long id) {
-        return this.userRepository.existsById(id);
+        return !this.userRepository.existsById(id);
     }
 
     @Override
@@ -87,39 +91,45 @@ public class UserServiceImpl implements UserService {
         this.applyToProfile(profile, updateProfileParams, user);
         if (!updateProfileParams.getHobbies().isEmpty()) {
             updateProfileParams.getHobbies().forEach(hobbyDTO -> {
-             // TODO this update uncorrect
-                this.updateOrCreateHobby(user, hobbyDTO );
+                // TODO this update uncorrect
+                this.updateOrCreateHobby(user, hobbyDTO);
             });
         }
         return this.profileRepository.save(profile);
     }
 
-    private void updateOrCreateHobby(User user, HobbyDTO hobbyDTO) {
-            if (hobbyDTO.getId() ==null){
-                Hobby newHobby = hobbyDTO.convertToHobby();
-                newHobby.setUser(user);
-                this.hobbyRepository.save(newHobby);
-            }else {
-                Hobby existHobby = this.hobbyRepository.findById(hobbyDTO.getId()).orElseThrow(HobbyNotFoundException::new);
-                existHobby.setName(hobbyDTO.getName());
-                existHobby.setImageUrl(hobbyDTO.getImageUrl());
-                this.hobbyRepository.save(existHobby);
-            }
+    @Override
+    public User getUserByUsername(String username) {
+        return this.userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
-    private void validateParams(User user, UserParams userParams) {
-        HashMap<String, String> errors = new HashMap<>();
-        if (user != null) {
-            errors.put("username", user.getUsername() + " already exist");
+    private void updateOrCreateHobby(User user, HobbyDTO hobbyDTO) {
+        if (hobbyDTO.getId() == null) {
+            Hobby newHobby = hobbyDTO.convertToHobby();
+            newHobby.setUser(user);
+            this.hobbyRepository.save(newHobby);
+        } else {
+            Hobby existHobby = this.hobbyRepository.findById(hobbyDTO.getId()).orElseThrow(HobbyNotFoundException::new);
+            existHobby.setName(hobbyDTO.getName());
+            existHobby.setImageUrl(hobbyDTO.getImageUrl());
+            this.hobbyRepository.save(existHobby);
         }
+    }
+
+    private void validateParams(UserParams userParams) {
+        HashMap<String, String> errors = new HashMap<>();
         if (userParams.getUsername() == null || userParams.getUsername().isEmpty()) {
             errors.put("username", "Username cannot be empty");
         }
-        if (userParams.getFirstName() == null || userParams.getFirstName().isEmpty()) {
-            errors.put("firstName", "firstName cannot be empty");
+        if (userParams.getFirstname() == null || userParams.getFirstname().isEmpty()) {
+            errors.put("firstname", "firstname cannot be empty");
         }
-        if (userParams.getLastName() == null || userParams.getLastName().isEmpty()) {
-            errors.put("lastName", "lastName cannot be empty");
+        if (userParams.getLastname() == null || userParams.getLastname().isEmpty()) {
+            errors.put("lastname", "lastname cannot be empty");
+        }
+        boolean isPresent = this.isUserLastnameAndFirstnameExist(userParams.getLastname(), userParams.getFirstname());
+        if (isPresent) {
+            errors.put("firstname", userParams.getLastname() + " already exist");
         }
         if (!errors.isEmpty()) {
             // TODO put error message to exception
@@ -147,6 +157,13 @@ public class UserServiceImpl implements UserService {
         if (updateProfileParams.getImageUrl() == null || updateProfileParams.getImageUrl().isEmpty()) {
             errors.put("imageUrl", "Image url cannot be empty");
         }
+        if (!updateProfileParams.getHobbies().isEmpty()){
+            updateProfileParams.getHobbies().forEach(hobbyDTO -> {
+                if (hobbyDTO.getName() == null || hobbyDTO.getName().isEmpty()) {
+                    errors.put("hobbyName", "Hobby name cannot be empty");
+                }
+            });
+        }
         if (!errors.isEmpty()) {
             throw new InvalidParameterException();
         }
@@ -154,8 +171,8 @@ public class UserServiceImpl implements UserService {
 
     private void applyToUser(User user, UserParams userParams) {
         user.setUsername(userParams.getUsername());
-        user.setFirstname(userParams.getFirstName());
-        user.setLastname(userParams.getLastName());
+        user.setFirstname(userParams.getFirstname());
+        user.setLastname(userParams.getLastname());
         user.setPassword(passwordEncoder.encode(userParams.getPassword()));
         user.setEmail(userParams.getEmail());
 
@@ -188,9 +205,14 @@ public class UserServiceImpl implements UserService {
         profile.setUser(user);
     }
 
-    public boolean isUserExist(String name) {
-        User user = this.userRepository.findByUsername(name);
+    public boolean isUserNameExist(String name) {
+        User user = this.userRepository.findByUsername(name).orElse(null);
         return user != null;
+    }
+
+    @Override
+    public boolean isUserLastnameAndFirstnameExist(String lastname, String firstname) {
+        return this.userRepository.findByLastnameAndFirstname(lastname, firstname).isPresent();
     }
 
 

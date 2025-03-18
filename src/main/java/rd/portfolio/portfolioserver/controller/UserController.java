@@ -40,17 +40,17 @@ public class UserController {
 
     }
 
-    @GetMapping("/{lastName}/{firstName}")
-    public ResponseEntity<UserDTO> getUserByName(@PathVariable String lastName, @PathVariable String firstName) {
+    @GetMapping("/user/{username}")
+    public ResponseEntity<UserDTO> getUserByName(@PathVariable String username) {
 
-        User user = this.userService.getUserByLastnameAndFirstname(lastName, firstName);
+        User user = this.userService.getUserByUsername(username);
         return new ResponseEntity<>(user.conventToDTO(), HttpStatus.OK);
 
     }
 
     @PostMapping()
     public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserParams userParam) {
-        boolean exist = this.userService.isUserExist(userParam.getUsername());
+        boolean exist = this.userService.isUserNameExist(userParam.getUsername());
         if (exist) {
             // TODO maybe put this check to service leve?
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -62,7 +62,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public UserDTO updateUser(@PathVariable Long id, @RequestBody UpdateUserParam updateUserParam) {
-        if (!this.userService.isUserExist(id)) {
+        if (this.userService.isUserExist(id)) {
             throw new UserNotFoundException("User not found with id " + id);
         }
         User user = this.userService.updateUser(id, updateUserParam);
@@ -77,7 +77,7 @@ public class UserController {
 
     @PutMapping("/{id}/profile")
     public ProfileDTO updateUserProfile(@PathVariable Long id, @RequestBody UpdateProfileParams updateProfileParams) {
-        if (!this.userService.isUserExist(id)) {
+        if (this.userService.isUserExist(id)) {
             throw new UserNotFoundException("User not found with id " + id);
         }
         Profile profile = this.userService.updateUserProfile(id, updateProfileParams);

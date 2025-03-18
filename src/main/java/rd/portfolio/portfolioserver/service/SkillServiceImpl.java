@@ -26,6 +26,7 @@ public class SkillServiceImpl implements SkillService {
     private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
     private final SecurityUtil securityUtil;
+    private final ExperienceService experienceService;
 
     @Override
     public Skill save(SkillParams skillParams) {
@@ -57,6 +58,10 @@ public class SkillServiceImpl implements SkillService {
     public void delete(Long id) {
         Skill skill = this.skillRepository.findById(id).orElseThrow(SkillNotFoundException::new);
         this.securityUtil.ensureLoggedUser(skill.getUser().getId());
+        List<Experience> experiences = skill.getExperiences();
+        experiences.forEach(experience -> {
+            experience.getTechnologies().remove(skill);
+        });
 
         skillRepository.deleteById(id);
     }

@@ -28,11 +28,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody UserParams userParams) {
-        boolean exist = this.userService.isUserExist(userParams.getUsername());
-        if (exist) {
-            // TODO maybe put this check to service leve?
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         this.userService.createUser(userParams);
         return new ResponseEntity<>(HttpStatus.CREATED);
 

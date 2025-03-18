@@ -20,6 +20,13 @@ public interface UserService {
 
     boolean isUserExist(Long id);
 
-    boolean isUserExist(String username);
+    boolean isUserNameExist(String username);
+
+    boolean isUserLastnameAndFirstnameExist(String lastname, String firstname);
+
     Profile updateUserProfile(Long id, UpdateProfileParams updateProfileParams);
+
+    User getUserByUsername(String username);
+
+
 }
