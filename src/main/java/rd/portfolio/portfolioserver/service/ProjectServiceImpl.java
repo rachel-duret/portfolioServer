@@ -24,14 +24,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project save(ProjectParams projectParams) {
-
+        this.validateProjectParams(projectParams);
         User user = this.securityUtil.ensureLoggedUser(projectParams.getUserId());
         boolean isExist = this.existsByName(projectParams.getName());
         if (isExist) {
             throw new ProjectAlreadyExistException();
         }
         this.validateProjectParams(projectParams);
-
         Project project = new Project();
         project.setUser(user);
         this.applyProject(projectParams, project);
@@ -46,7 +45,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project findById(Long id) {
-        return projectRepository.findById(id).orElseThrow();
+        return projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
     }
 
     @Override
