@@ -23,20 +23,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SkillServiceImpl implements SkillService {
     private final SkillRepository skillRepository;
-    private final UserRepository userRepository;
-    private final UserDetailsService userDetailsService;
     private final SecurityUtil securityUtil;
-    private final ExperienceService experienceService;
+
 
     @Override
     public Skill save(SkillParams skillParams) {
         User user = this.securityUtil.ensureLoggedUser(skillParams.getUserId());
+        this.validateSkillParams(skillParams);
         boolean isExist = this.existsByName(skillParams.getName());
         if (isExist) {
             throw new SkillAlreadyExistException();
         }
-        this.validateSkillParams(skillParams);
-
         Skill skill = new Skill();
         skill.setUser(user);
         this.applySkill(skillParams, skill);
@@ -51,7 +48,7 @@ public class SkillServiceImpl implements SkillService {
 
     @Override
     public Skill findById(Long id) {
-        return skillRepository.findById(id).orElseThrow();
+        return skillRepository.findById(id).orElseThrow(SkillNotFoundException::new);
     }
 
     @Override
