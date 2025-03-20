@@ -17,14 +17,6 @@ public class SecurityUtil {
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
-    public static String getLoggedUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            return authentication.getName();
-        }
-        return null;
-    }
-
     public User ensureLoggedUser(Long requestId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(authentication.getName());
