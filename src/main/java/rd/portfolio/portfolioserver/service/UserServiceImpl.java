@@ -47,11 +47,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserParams userParams) {
-        boolean userNameExist = this.isUserNameExist(userParams.getUsername());
-        if (userNameExist) {
-            throw new UserAlreadyExistException();
-        }
         this.validateParams(userParams);
+
         User newUser = new User();
         this.applyToUser(newUser, userParams);
         newUser.setHobbies(new ArrayList<>());
@@ -127,10 +124,18 @@ public class UserServiceImpl implements UserService {
         if (userParams.getLastname() == null || userParams.getLastname().isEmpty()) {
             errors.put("lastname", "lastname cannot be empty");
         }
+        if (userParams.getPassword() == null || userParams.getPassword().isEmpty()) {
+            errors.put("password", "password cannot be empty");
+        }
+        boolean userNameExist = this.isUserNameExist(userParams.getUsername());
+        if (userNameExist) {
+            errors.put("username", "Username already exist");
+        }
         boolean isPresent = this.isUserLastnameAndFirstnameExist(userParams.getLastname(), userParams.getFirstname());
         if (isPresent) {
             errors.put("firstname", userParams.getLastname() + " already exist");
         }
+
         if (!errors.isEmpty()) {
             // TODO put error message to exception
             throw new InvalidParameterException();
