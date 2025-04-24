@@ -4,13 +4,27 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!-- SCHEMA CREATION -->
+    <changeSet id="001" author="rachel-d">
 
-    <changeSet id="1" author="rachel-d">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS portfolio;
+        </sql>
+    </changeSet>
+
+    <!-- USER TABLE -->
+    <changeSet id="002" author="rachel-d">
         <createTable tableName="user" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="username" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="password" type="varchar(255)">
@@ -29,8 +43,8 @@
         </createTable>
 
     </changeSet>
-    <!--    Profile-->
-    <changeSet id="2" author="rachel-d">
+    <!-- PROFILE TABLE -->
+    <changeSet id="003" author="rachel-d">
         <createTable tableName="profile" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -61,8 +75,8 @@
         </createTable>
 
     </changeSet>
-    <!--    Social-->
-    <changeSet id="3" author="rachel-d">
+    <!-- SOCIAL TABLE -->
+    <changeSet id="004" author="rachel-d">
         <createTable tableName="social" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -86,8 +100,9 @@
         </createTable>
     </changeSet>
 
-    <!--    Experience-->
-    <changeSet id="4" author="rachel-d">
+
+    <!-- EXPERIENCE TABLE -->
+    <changeSet id="005" author="rachel-d">
         <createTable tableName="experience" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -120,8 +135,8 @@
         </createTable>
     </changeSet>
 
-    <!--    Project-->
-    <changeSet id="5" author="rachel-d">
+    <!-- PROJECT TABLE -->
+    <changeSet id="006" author="rachel-d">
         <createTable tableName="project" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -146,8 +161,8 @@
             </column>
         </createTable>
     </changeSet>
-    <!--    Skill-->
-    <changeSet id="6" author="rachel-d">
+    <!-- SKILLS TABLE -->
+    <changeSet id="007" author="rachel-d">
         <createTable tableName="skills" schemaName="portfolio">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -172,36 +187,57 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="7" author="rachel-d">
+    <!-- HOBBIES TABLE -->
+    <changeSet id="008" author="rachel-d">
+        <createTable tableName="hobbies" schemaName="portfolio">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_hobby" references="user(id)"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <!-- TECHNOLOGY-SKILL RELATIONSHIP -->
+    <changeSet id="009" author="rachel-d">
         <createTable tableName="technologies_skills" schemaName="portfolio">
-            <column name="experience_id" type="BIGINT" >
-                <constraints nullable="false" />
+            <column name="experience_id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
             <column name="skill_id" type="BIGINT">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
-
-    </changeSet>
-    <changeSet id="8" author="rachel">
         <addForeignKeyConstraint baseTableName="technologies_skills" baseColumnNames="experience_id"
-                                 referencedTableName="experience"
-                                 referencedColumnNames="id"  constraintName="fk_skill_experience"/>
+                                 referencedTableName="experience" referencedColumnNames="id"
+                                 constraintName="fk_skill_experience"  />
 
-        <addForeignKeyConstraint baseTableName="technologies_skills" baseColumnNames="skill_id" constraintName="fk_experience_skill"
-                                 referencedTableName="skills"
+        <addForeignKeyConstraint baseTableName="technologies_skills" baseColumnNames="skill_id"
+                                 constraintName="fk_experience_skill" referencedTableName="skills"
                                  referencedColumnNames="id" />
-    </changeSet>
-    <changeSet id="1737031683932-1" author="rachel">
 
         <addUniqueConstraint
                 tableName="technologies_skills"
                 columnNames="experience_id, skill_id"
                 constraintName="uq_technologies_skills"
         />
+
     </changeSet>
-<!--    Summaries-->
-    <changeSet id="9" author="rachel">
+
+    <!--    Summaries-->
+    <changeSet id="010" author="rachel">
         <createTable tableName="summaries">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

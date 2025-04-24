@@ -1,18 +1,13 @@
-version: "3"
+
 services:
   database:
-    image: mysql
+    image: postgres
     restart: always
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      MYSQL_DATABASE: portfolio
-      MYSQL_USER: rachel
-      MYSQL_PASSWORD: rachel
-      MYSQL_ROOT_PASSWORD: rachel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: portfolio
 
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+

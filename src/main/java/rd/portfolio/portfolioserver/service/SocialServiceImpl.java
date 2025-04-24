@@ -24,6 +24,7 @@ public class SocialServiceImpl implements SocialService {
 
     @Override
     public Social createSocial(SocialParams socialParams) {
+        this.validateSocialParams(socialParams);
         User user = this.securityUtil.ensureLoggedUser(socialParams.getUserId());
         if (this.socialRepository.existsByName(socialParams.getName())) {
             throw new SocialAlreadyExistException();
@@ -38,6 +39,7 @@ public class SocialServiceImpl implements SocialService {
 
     @Override
     public Social updateSocial(Long id, SocialParams socialParams) {
+        this.validateSocialParams(socialParams);
         Social social = this.getSocialById(id);
         this.validateSocialParams(socialParams);
         this.applySocial(socialParams, social);
@@ -73,14 +75,17 @@ public class SocialServiceImpl implements SocialService {
 
     private void validateSocialParams(SocialParams socialParams) {
         Map<String, String> errors = new HashMap<>();
-        if (socialParams.getName().isBlank()) {
+        if ( socialParams.getName()==null||socialParams.getName().isEmpty()) {
             errors.put("name", "cannot be empty");
         }
-        if (socialParams.getUrl().isBlank()) {
+        if (socialParams.getImageUrl()==null || socialParams.getImageUrl().isEmpty()) {
             errors.put("url", "cannot be empty");
         }
-        if (socialParams.getUrl().isBlank()) {
+        if (socialParams.getUrl()==null || socialParams.getUrl().isEmpty()) {
             errors.put("url", "cannot be empty");
+        }
+        if (socialParams.getUserId()==null) {
+            errors.put("userId", "cannot be null");
         }
 
         if (!errors.isEmpty()) {
