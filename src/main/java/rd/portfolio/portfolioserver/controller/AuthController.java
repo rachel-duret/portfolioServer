@@ -8,10 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import rd.portfolio.portfolioserver.configuration.jwt.JwtUtil;
 import rd.portfolio.portfolioserver.dto.LoginDTO;
@@ -44,6 +41,13 @@ public class AuthController {
         } catch (AuthenticationException exception) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, exception.getMessage());
         }
+
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> register() {
+
+        return new ResponseEntity<>("deploy is working", HttpStatus.OK);
 
     }
 

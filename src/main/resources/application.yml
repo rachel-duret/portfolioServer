@@ -9,17 +9,23 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        default_schema: public
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/portfolio
-    username: postgres
-    password: password
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
 
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
-    default-schema: portfolio
+    default-schema: public
+    parameters:
+      liquibaseSchemaName: public
+
   session:
     jdbc:
       initialize-schema: always

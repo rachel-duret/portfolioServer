@@ -8,7 +8,10 @@ spring:
     database: postgresql
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: public
 
   datasource:
     url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
@@ -19,7 +22,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
-    default-schema: portfolio
+
   session:
     jdbc:
       initialize-schema: always

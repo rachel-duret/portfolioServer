@@ -4,17 +4,21 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <!-- SCHEMA CREATION -->
-    <changeSet id="001" author="rachel-d">
 
-        <sql>
-            CREATE SCHEMA IF NOT EXISTS portfolio;
-        </sql>
+    <!-- 初始化 schema（兼容 Heroku 和本地） -->
+    <changeSet id="000-init-schema" author="system">
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <not>-->
+<!--                <tableExists schemaName="public" tableName="user"/>-->
+<!--            </not>-->
+<!--        </preConditions>-->
+        <sql>CREATE SCHEMA IF NOT EXISTS public</sql>
+        <sql>GRANT ALL ON SCHEMA public TO public</sql>
     </changeSet>
 
     <!-- USER TABLE -->
     <changeSet id="002" author="rachel-d">
-        <createTable tableName="user" schemaName="portfolio">
+        <createTable tableName="user">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -45,7 +49,7 @@
     </changeSet>
     <!-- PROFILE TABLE -->
     <changeSet id="003" author="rachel-d">
-        <createTable tableName="profile" schemaName="portfolio">
+        <createTable tableName="profile">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -77,7 +81,7 @@
     </changeSet>
     <!-- SOCIAL TABLE -->
     <changeSet id="004" author="rachel-d">
-        <createTable tableName="social" schemaName="portfolio">
+        <createTable tableName="social">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -103,7 +107,7 @@
 
     <!-- EXPERIENCE TABLE -->
     <changeSet id="005" author="rachel-d">
-        <createTable tableName="experience" schemaName="portfolio">
+        <createTable tableName="experience">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -137,7 +141,7 @@
 
     <!-- PROJECT TABLE -->
     <changeSet id="006" author="rachel-d">
-        <createTable tableName="project" schemaName="portfolio">
+        <createTable tableName="project">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -163,7 +167,7 @@
     </changeSet>
     <!-- SKILLS TABLE -->
     <changeSet id="007" author="rachel-d">
-        <createTable tableName="skills" schemaName="portfolio">
+        <createTable tableName="skills">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -189,7 +193,7 @@
 
     <!-- HOBBIES TABLE -->
     <changeSet id="008" author="rachel-d">
-        <createTable tableName="hobbies" schemaName="portfolio">
+        <createTable tableName="hobbies">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -212,7 +216,7 @@
 
     <!-- TECHNOLOGY-SKILL RELATIONSHIP -->
     <changeSet id="009" author="rachel-d">
-        <createTable tableName="technologies_skills" schemaName="portfolio">
+        <createTable tableName="technologies_skills">
             <column name="experience_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>

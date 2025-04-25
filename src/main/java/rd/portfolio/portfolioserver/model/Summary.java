@@ -9,7 +9,7 @@ import rd.portfolio.portfolioserver.dto.SummaryDTO;
 @Entity
 @Getter
 @Setter
-@Table(name = "summaries", schema = "portfolio")
+@Table(name = "summaries")
 public class Summary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

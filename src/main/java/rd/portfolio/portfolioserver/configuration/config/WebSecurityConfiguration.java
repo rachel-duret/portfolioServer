@@ -70,7 +70,7 @@ public class WebSecurityConfiguration {
                                                  .authenticated())
                 .sessionManagement(ssession -> ssession.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //                    .authenticationProvider(authenticationProvider)
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userSecurityService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         //                .exceptionHandling(ex->ex.authenticationEntryPoint(unauthorizedHandler))
 
         return httpSecurity.build();

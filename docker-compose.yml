@@ -8,6 +8,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: portfolio
+      POSTGRES_DB: public
 
 
