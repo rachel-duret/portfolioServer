@@ -1,12 +1,17 @@
-FROM eclipse-temurin:21-jdk-alpine
+# Use Debian-based Eclipse Temurin JDK (full image with shell and utilities)
+FROM eclipse-temurin:21-jdk
 
+# Set working directory
 WORKDIR /app
-COPY . ./
 
-# Install bash and core utilities
-RUN apk add --no-cache bash coreutils
+# Copy all project files
+COPY . .
 
-# Make mvnw executable and build
-RUN chmod +x ./mvnw && ./mvnw -B -DskipTests clean package
+# Make mvnw executable (if you still want to use it)
+RUN chmod +x ./mvnw
 
-CMD ["bash", "-c", "java -Dserver.port=$PORT -jar target/*.jar"]
+# Build the Spring Boot app (skip tests to speed up build)
+RUN ./mvnw -B -DskipTests clean package
+
+# Run the app using the dynamically built JAR
+CMD ["java", "-Dserver.port=${PORT}", "-jar", "target/*.jar"]
