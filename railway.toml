@@ -2,10 +2,13 @@
 builder = "NIXPACKS"
 
 [phases.setup]
+# install dependencies for build
 nixPkgs = ["openjdk21", "maven"]
 
 [phases.build]
-cmds = ["mvn -DskipTests clean package -Pproduction"]
+# build your JAR with Maven
+cmds = ["mvn -B -DskipTests clean package -Pproduction"]
 
 [start]
+# run the JAR with the correct port
 cmd = "java -Dserver.port=$PORT -jar target/*jar"
