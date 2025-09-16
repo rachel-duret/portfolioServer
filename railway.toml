@@ -1,0 +1,22 @@
+[build]
+builder = "NIXPACKS"
+
+[phases.setup]
+# Install Java 21 and Maven
+nixPkgs = ["openjdk21", "maven"]
+
+[phases.build]
+# Use a cache for Maven repository to speed up builds
+cmds = [
+    "mkdir -p /cache/m2",
+    "export MAVEN_OPTS='-Dmaven.repo.local=/cache/m2'",
+    "mvn -B -DskipTests clean package -Pproduction"
+]
+
+[cache]
+# Persist Maven local repository across builds
+paths = ["/cache/m2"]
+
+[start]
+# Run the Spring Boot app on the correct Railway port
+cmd = "java -Dserver.port=$PORT -jar target/*.jar"
